@@ -13,12 +13,14 @@ use App\Http\Controllers\api\UsersController;
 Route::middleware(['auth:api'])->group(function () {
   // Route::apiResource('invoice-logs', InvoiceLogsController::class);
   Route::get('/user-names', [AdminsController::class, 'listUserNames']);
+  Route::delete('/users/remove-expired', [AdminsController::class, 'removeExpiredUsers']);
   Route::apiResource('admins', AdminsController::class);
   Route::get('/admins', [AdminsController::class, 'index']);
   Route::delete('/admins/{id}', [AdminsController::class, 'destroy']);
 
   Route::apiResource('configs', ConfigsController::class);
   Route::get('/configs', [ConfigsController::class, 'index']);
+  Route::post('/configs', [ConfigsController::class, 'create']);
   Route::delete('/configs/{id}', [ConfigsController::class, 'destroy']);
 
 });

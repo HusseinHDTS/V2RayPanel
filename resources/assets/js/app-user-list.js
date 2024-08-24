@@ -3,6 +3,7 @@
  */
 
 'use strict';
+import axios from 'axios';
 
 // Datatable (jquery)
 $(function () {
@@ -18,6 +19,74 @@ $(function () {
     headingColor = config.colors.headingColor;
   }
 
+  $(document).on('click', '.remove-expired-users', function () {
+    Swal.fire({
+      title: 'هشدار!',
+      text: 'پس از حذف کاربر دیگر قابلیت بازگشت عملیات وجود ندارد',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'حذف کن!',
+      cancelButtonText: 'لغو',
+      customClass: {
+        confirmButton: 'btn btn-primary me-2 waves-effect waves-light',
+        cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        $.blockUI({
+          message:
+            '<div class="d-flex justify-content-center"><p class="mb-0 mx-2">منتظر بمانید...</p> <div class="sk-wave m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
+          css: {
+            backgroundColor: 'transparent',
+            color: '#fff',
+            border: '0'
+          },
+          overlayCSS: {
+            opacity: 0.8
+          }
+        });
+        axios
+          .delete(`/api/users/remove-expired`, {
+            headers: {
+              Authorization: `Bearer ${window.apiToken}`,
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(data => {
+            $.unblockUI();
+            Swal.fire({
+              icon: 'success',
+              title: 'حذف شد!',
+              text: 'کاربر مورد نظر به همراه حذف شد',
+              confirmButtonText: 'باشه',
+              customClass: {
+                confirmButton: 'btn btn-success waves-effect waves-light'
+              }
+            }).then(function (result) {
+              window.location.href = '/app/user/list';
+            });
+          })
+          .catch(error => {
+            $.unblockUI();
+            $('.wizard-icons-invoice').block({
+              message: '<p class="mb-0">عملیات نا موفق</p><div>' + JSON.stringify(error) + '</div>',
+              timeout: 3000,
+              css: {
+                backgroundColor: 'transparent',
+                color: '#fff',
+                border: '0'
+              },
+              overlayCSS: {
+                opacity: 0.25
+              }
+            });
+          });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        // can do any thing
+      }
+    });
+  })
   // Variable declaration for table
   var dt_user_table = $('.datatables-users'),
     select2 = $('.select2'),
@@ -107,14 +176,25 @@ $(function () {
           // User Status
           targets: 5,
           render: function (data, type, full, meta) {
-            return full['sub_days'];
+            return `${full['sub_days']} روز`;
           }
         },
         {
           // User Status
           targets: 6,
           render: function (data, type, full, meta) {
-            return "remaining date calculate";
+            const subDays = full['sub_days'];
+            const earlierDate = new Date(full['start_sub_date'])
+            const currentDate = new Date();
+            const differenceInMs = currentDate - earlierDate;
+            // Convert milliseconds to days
+            const differenceInDays = parseInt(differenceInMs / (1000 * 60 * 60 * 24)) || 0;
+            const daysRemaining = subDays - differenceInDays;
+            if (daysRemaining > 0) {
+              return `${daysRemaining} روز`;
+            } else {
+              return `<span class="badge bg-label-danger">اعتبار تمام شده است</span> ${currentDate} / ${earlierDate}`;
+            }
           }
         },
         {
@@ -147,6 +227,8 @@ $(function () {
               '<div class="dropdown-menu dropdown-menu-end m-0">' +
               `<a href="${userUrl}" class="dropdown-item">ویرایش</a>` +
               `<a href="${userUrl}/delete" class="dropdown-item">حذف کاربر</a>` +
+              `<a href="${userUrl}/resetVolume" class="dropdown-item">تمدید حجم</a>` +
+              `<a href="${userUrl}/resetDays" class="dropdown-item">تمدید اعتبار</a>` +
               `<a href="${userUrl}/removeActiveSessions" class="dropdown-item">حذف سشن های فعال</a>` +
               '</div>' +
               '</div>'
@@ -173,13 +255,17 @@ $(function () {
       // Buttons with Dropdown
       buttons: [
         {
+          text: '<i class="ti ti-trash me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">حذف کاربران منقضی شده</span>',
+          className: 'add-new btn btn-outline-danger waves-effect waves-light mx-3 remove-expired-users',
+        },
+        {
           text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">افزودن کاربر</span>',
           className: 'add-new btn btn-primary waves-effect waves-light mx-3',
           attr: {
             'data-bs-toggle': 'offcanvas',
             'data-bs-target': '#offcanvasAddUser'
           }
-        }
+        },
       ],
       // For responsive popup
       responsive: {
@@ -259,8 +345,8 @@ $(function () {
             message: 'رمز عبور را وارد کنید'
           },
           stringLength: {
-            min: 8,
-            message: 'رمز عبور باید حداقل 8 کاراکتر باشد'
+            min: 2,
+            message: 'رمز عبور باید حداقل 2 کاراکتر باشد'
           },
         }
       },
@@ -287,7 +373,8 @@ $(function () {
           },
           between: {
             min: 1,
-            message: 'تعداد نشست‌های فعال باید حداقل 1 باشد'
+            max:10,
+            message: 'تعداد نشست‌های فعال باید حداقل 1 و حداکثر 10 باشد'
           }
         }
       },
@@ -300,8 +387,9 @@ $(function () {
             message: 'این فیلد باید یک عدد باشد'
           },
           between: {
-            min: 0,
-            message: 'حجم مجاز باید حداقل 0 باشد'
+            min: 1,
+            max:100000,
+            message: 'حجم مجاز باید حداقل 1 و حداکثر 100,000 باشد'
           }
         }
       },
@@ -315,7 +403,8 @@ $(function () {
           },
           between: {
             min: 1,
-            message: 'تعداد روز های مجاز باید حداقل 1 باشد'
+            max:365,
+            message: 'تعداد روز های مجاز باید حداقل 1 و حداکثر 365 باشد'
           }
         }
       },

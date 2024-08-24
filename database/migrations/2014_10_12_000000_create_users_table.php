@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('username')->default('');
             $table->integer('active_sessions')->default(0);
             $table->integer('max_active_session')->default(0);
-            $table->datetime('start_sub_date')->default(now());
+            $table->datetime('start_sub_date')->useCurrent();
             $table->integer('sub_days')->default(30);
             $table->integer('max_volume')->default(300);
-            $table->integer('current_volume')->default(300);
+            $table->integer('current_volume')->default(0);
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

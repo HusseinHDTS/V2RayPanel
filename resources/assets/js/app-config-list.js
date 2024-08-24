@@ -3,6 +3,7 @@
  */
 
 'use strict';
+import axios from 'axios';
 
 // Datatable (jquery)
 $(function () {
@@ -81,6 +82,78 @@ $(function () {
       }
     });
   }
+  var data_submit = $('.data-submit');
+  if (data_submit) {
+    var $this = data_submit;
+    $this.on('click', function () {
+      var $form = $('.add-new-config')
+      var items = {};
+      $form.find('input').each(function () {
+        var $name = $(this).attr('name');
+        var $value = $(this).val();
+        items[$name] = $value;
+      })
+      $form.find('textarea').each(function () {
+        var $name = $(this).attr('name');
+        var $value = $(this).val();
+        items[$name] = $value;
+      })
+      $form.find('select').each(function () {
+        var $name = $(this).attr('name');
+        items[$name] = $(this).val();
+      })
+      $.blockUI({
+        message:
+          '<div class="d-flex justify-content-center"><p class="mb-0 mx-2">منتظر بمانید...</p> <div class="sk-wave m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
+        css: {
+          backgroundColor: 'transparent',
+          color: '#fff',
+          border: '0'
+        },
+        overlayCSS: {
+          opacity: 0.8
+        }
+      });
+      axios.post('/api/configs', items, {
+        headers: {
+          Authorization: `Bearer ${window.apiToken}`,
+          'Content-Type': 'application/json'
+        }
+      }).then(data => {
+        $.unblockUI();
+        $.blockUI({
+          message: '<p class="mb-0">عملیات موفق</p>',
+          timeout: 3000,
+          css: {
+            backgroundColor: 'transparent',
+            color: '#fff',
+            border: '0'
+          },
+          overlayCSS: {
+            opacity: 0.6
+          }
+        });
+        window.location.href = '/app/config/list';
+      })
+        .catch(error => {
+          console.log(error);
+          $.unblockUI();
+          $.blockUI({
+            message: '<p class="mb-0">عملیات نا موفق</p><div>' + JSON.stringify(error) + '</div>',
+            timeout: 3000,
+            css: {
+              backgroundColor: 'transparent',
+              color: '#fff',
+              border: '0'
+            },
+            overlayCSS: {
+              opacity: 0.25
+            }
+          });
+        });
+    })
+  }
+
   // Users datatable
   if (dt_user_table.length) {
     var dt_user = dt_user_table.DataTable({
@@ -298,7 +371,7 @@ $(function () {
 // Validation & Phone mask
 (function () {
   const phoneMaskList = document.querySelectorAll('.phone-mask'),
-    addNewUserForm = document.getElementById('addNewUserForm');
+    addNewUserForm = document.getElementById('addNewConfigForm');
 
   // Phone Number
   if (phoneMaskList) {

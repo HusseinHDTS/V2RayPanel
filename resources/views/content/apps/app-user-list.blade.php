@@ -4,10 +4,15 @@
 
 @section('vendor-style')
     @vite(['resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss', 'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss', 'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss', 'resources/assets/vendor/libs/select2/select2.scss', 'resources/assets/vendor/libs/@form-validation/form-validation.scss'])
+    @vite(['resources/assets/vendor/libs/animate-css/animate.scss', 'resources/assets/vendor/libs/sweetalert2/sweetalert2.scss'])
+    @vite('resources/assets/vendor/libs/spinkit/spinkit.scss')
+    @vite(['resources/assets/vendor/libs/swiper/swiper.scss'])
 @endsection
 
 @section('vendor-script')
-    @vite(['resources/assets/vendor/libs/moment/moment.js', 'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js', 'resources/assets/vendor/libs/select2/select2.js', 'resources/assets/vendor/libs/@form-validation/popular.js', 'resources/assets/vendor/libs/@form-validation/bootstrap5.js', 'resources/assets/vendor/libs/@form-validation/auto-focus.js', 'resources/assets/vendor/libs/cleavejs/cleave.js', 'resources/assets/vendor/libs/cleavejs/cleave-phone.js'])
+    @vite(['resources/assets/vendor/libs/block-ui/block-ui.js','resources/assets/vendor/libs/moment/moment.js', 'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js', 'resources/assets/vendor/libs/select2/select2.js', 'resources/assets/vendor/libs/@form-validation/popular.js', 'resources/assets/vendor/libs/@form-validation/bootstrap5.js', 'resources/assets/vendor/libs/@form-validation/auto-focus.js', 'resources/assets/vendor/libs/cleavejs/cleave.js', 'resources/assets/vendor/libs/cleavejs/cleave-phone.js'])
+    @vite(['resources/assets/vendor/libs/swiper/swiper.js'])
+    @vite(['resources/assets/vendor/libs/sweetalert2/sweetalert2.js'])
 @endsection
 
 @section('page-script')
@@ -75,20 +80,21 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="add-user-max-volume">حجم</label>
-                        <input id="add-user-max-volume" class="form-control" placeholder="1" value="50"
-                            aria-label="حجم" type="number" name="max_volume" />
+                        <input id="add-user-max-volume" class="form-control" placeholder="1" value="50" aria-label="حجم"
+                            type="number" name="max_volume" />
+                        <input name="current_volume" value="0" hidden>
                     </div>
                     <div class="mb-3 bg-warning text-white px-4 py-2 text-center" style="border-radius: 4px">
-                      <p>حجم بر اساس گیگابایت وارد شود</p>
-                      <div class="text-center">
-                        <span>مثال : </span>
-                        <span>50</span>
-                      </div>
+                        <p>حجم بر اساس گیگابایت وارد شود</p>
+                        <div class="text-center">
+                            <span>مثال : </span>
+                            <span>50</span>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="add-user-sub-days">روز</label>
-                        <input id="add-user-sub-days" class="form-control" placeholder="1" value="30"
-                            aria-label="روز" type="number" name="sub_days" />
+                        <input id="add-user-sub-days" class="form-control" placeholder="1" value="30" aria-label="روز"
+                            type="number" name="sub_days" />
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="user-internet-type">نوع خط</label>

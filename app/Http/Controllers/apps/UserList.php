@@ -13,8 +13,31 @@ class UserList extends Controller
   {
     User::create($request->all());
 
-    return redirect()->route('app-user-list');
+    return redirect()->route('app-user-list')->with('success','کاربر ایجاد شد');
 
+  }
+  public function resetVolume($id){
+    $user = User::findOrFail($id);
+    $user->current_volume = 0;
+    $user->save();
+    return redirect()->route('app-user-list')->with('success','حجم تمدید شد');
+  }
+  public function resetDays($id){
+    $user = User::findOrFail($id);
+    $user->start_sub_date = now();
+    $user->save();
+    return redirect()->route('app-user-list')->with('success','اعتبار تمدید شد');
+  }
+  public function delete($id){
+    $user = User::findOrFail($id);
+    if ($user) {
+      $tokens = $user->tokens;
+      foreach ($tokens as $token) {
+        $token->revoke();
+      }
+      $user->delete();
+    }
+    return redirect()->route('app-user-list');
   }
   public function removeActiveSessions($id)
   {

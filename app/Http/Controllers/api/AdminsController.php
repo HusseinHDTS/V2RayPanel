@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\InvoiceList;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
@@ -17,6 +18,21 @@ class AdminsController extends Controller
   /**
    * Display a listing of the resource.
    */
+
+  public function removeExpiredUsers(){
+    $users = User::all();
+
+    foreach ($users as $user) {
+        // Calculate the subscription expiration date
+        $expirationDate = Carbon::parse($user->start_sub_date)->addDays($user->sub_days);
+
+        if (Carbon::now()->greaterThanOrEqualTo($expirationDate)) {
+            $user->delete();
+        } else {
+        }
+    }
+
+  }
 
   public function listUserNames(Request $request)
   {

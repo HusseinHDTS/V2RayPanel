@@ -4,10 +4,11 @@
 
 @section('vendor-style')
     @vite(['resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss', 'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss', 'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss', 'resources/assets/vendor/libs/select2/select2.scss', 'resources/assets/vendor/libs/@form-validation/form-validation.scss'])
+    @vite('resources/assets/vendor/libs/spinkit/spinkit.scss')
 @endsection
 
 @section('vendor-script')
-    @vite(['resources/assets/vendor/libs/moment/moment.js', 'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js', 'resources/assets/vendor/libs/select2/select2.js', 'resources/assets/vendor/libs/@form-validation/popular.js', 'resources/assets/vendor/libs/@form-validation/bootstrap5.js', 'resources/assets/vendor/libs/@form-validation/auto-focus.js', 'resources/assets/vendor/libs/cleavejs/cleave.js', 'resources/assets/vendor/libs/cleavejs/cleave-phone.js'])
+    @vite(['resources/assets/vendor/libs/moment/moment.js', 'resources/assets/vendor/libs/block-ui/block-ui.js', 'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js', 'resources/assets/vendor/libs/select2/select2.js', 'resources/assets/vendor/libs/@form-validation/popular.js', 'resources/assets/vendor/libs/@form-validation/bootstrap5.js', 'resources/assets/vendor/libs/@form-validation/auto-focus.js', 'resources/assets/vendor/libs/cleavejs/cleave.js', 'resources/assets/vendor/libs/cleavejs/cleave-phone.js'])
 @endsection
 
 @section('page-script')
@@ -42,9 +43,8 @@
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
             </div>
             <div class="offcanvas-body mx-0 flex-grow-0 pt-0 h-100">
-                <form class="add-new-user pt-0" id="addNewUserForm" action="{{ route('create-config.post') }}"
+                <form class="add-new-config pt-0" id="addNewConfigForm"
                     method="POST">
-                    @csrf
                     <div class="mb-3">
                         <label class="form-label" for="add-title">عنوان</label>
                         <input type="text" class="form-control" id="add-title" placeholder="عنوان" name="title"
@@ -88,7 +88,7 @@
                         <input id="add-order" class="form-control" placeholder="0" value="0" aria-label="اولویت"
                             type="number" name="order" />
                     </div>
-                    <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">ارسال</button>
+                    <button type="button" class="btn btn-primary me-sm-3 me-1 data-submit">ارسال</button>
                     <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="offcanvas">لغو</button>
                 </form>
             </div>

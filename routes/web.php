@@ -24,6 +24,9 @@ Route::group(['middleware' => ['guest:admin']], function () {
 
   Route::get('/app/user/list', [UserList::class, 'index'])->name('app-user-list');
   Route::post('/app/user/add', [UserList::class, 'create'])->name('create-user.post');
+  Route::get('/app/user/{id}/delete', [UserList::class, 'delete'])->name('delete-user');
+  Route::get('/app/user/{id}/resetVolume', [UserList::class, 'resetVolume'])->name('reset-user-volume');
+  Route::get('/app/user/{id}/resetDays', [UserList::class, 'resetDays'])->name('reset-user-days');
   Route::get('/app/user/{id}/removeActiveSessions', [UserList::class, 'removeActiveSessions'])->name('delete-user-active-sessions');
 
   Route::get('/app/config/list', [ConfigList::class, 'index'])->name('app-config-list');
@@ -35,8 +38,6 @@ Route::group(['middleware' => ['guest:admin']], function () {
 
   Route::post('/auth/logout', [LoginBasic::class, 'logout'])->name('logout');
   Route::get('/app/user/view/account/{id}', [UserViewAccount::class, 'index'])->name('app-user-view-account');
-
-  Route::resource('/user-list', UserManagement::class);
 });
 
 Route::get('/auth/login', [LoginBasic::class, 'index'])->name('auth-login-basic');
