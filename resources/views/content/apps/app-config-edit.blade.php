@@ -50,7 +50,7 @@
                         <label for="internet_type">نوع خط</label>
                         <select class="form-select" name="internet_type">
                             <option value="irancel" @if ($config->internet_type == 'irancel') selected @endif>ایرانسل</option>
-                            <option value="hamrah_aval" @if ($config->internet_type == 'hamrah_aval') selected @endif>همراه اول</option>
+                            <option value="hamrah" @if ($config->internet_type == 'hamrah') selected @endif>همراه اول</option>
                             <option value="rightel" @if ($config->internet_type == 'rightel') selected @endif>رایتل</option>
                             <option value="wifi" @if ($config->internet_type == 'wifi') selected @endif>وای‌فای</option>
                         </select>
@@ -63,7 +63,7 @@
                         </select>
                     </div>
                     <div class="col-md-6 col-12 mb-3">
-                        <label for="active">وضعیت</label>
+                        <label for="active">اولویت</label>
                         <input class="form-control" type="number" name="order" value="{{ $config->order }}">
                     </div>
                 </div>

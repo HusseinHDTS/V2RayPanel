@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\apps\ConfigList;
+use App\Http\Controllers\BackupController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\apps\UserManagement;
 use App\Http\Controllers\apps\EcommerceDashboard;
@@ -21,6 +22,11 @@ use Illuminate\Support\Facades\Artisan;
 Route::group(['middleware' => ['guest:admin']], function () {
   Route::get('/', [EcommerceDashboard::class, 'index',])->name('dashboard');
   Route::post('/settings', [EcommerceDashboard::class, 'update',])->name('app-settings-change.post');
+  
+  Route::get('/app/backup/list', [BackupController::class, 'index'])->name('app-backup-list');
+  Route::get('/app/backup/list/{id}', [BackupController::class, 'download'])->name('app-backup-download');
+  Route::get('/app/backup/create', [BackupController::class, 'createBackup'])->name('app-backup-create');
+  // Route::get('/restore', [BackupController::class, 'restoreBackup'])->name('backup.restore');
 
   Route::post('/app/user/add', [UserList::class, 'create'])->name('create-user.post');
   Route::get('/app/user/list', [UserList::class, 'index'])->name('app-user-list');

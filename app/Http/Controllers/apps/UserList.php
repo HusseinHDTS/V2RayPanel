@@ -23,8 +23,8 @@ class UserList extends Controller
     $userData = $request->all();
     if($userData['sub_days'] != $user->sub_days){
       $userData['start_sub_date'] = now();
-      $user->update($userData);
     }
+    $user->update($userData);
     return redirect()->route('app-user-list')->with('success','کاربر ویرایش شد');
   }
   public function toggle($id){

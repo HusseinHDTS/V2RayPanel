@@ -46,7 +46,8 @@ class AdminsController extends Controller
   }
   public function index()
   {
-    $users = User::all();
+    // $users = User::all();
+    $users = User::orderBy('created_at', 'desc')->get();
     return response()->json([
       'data' => $users->map(function ($admin) {
         return $admin;

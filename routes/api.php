@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BackupController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\InvoiceListController;
@@ -19,6 +20,7 @@ Route::middleware(['auth:api'])->group(function () {
   Route::delete('/admins/{id}', [AdminsController::class, 'destroy']);
 
   Route::apiResource('configs', ConfigsController::class);
+  Route::get('/backups', [BackupController::class, 'list']);
   Route::get('/configs', [ConfigsController::class, 'index']);
   Route::post('/configs', [ConfigsController::class, 'create']);
   Route::delete('/configs/{id}', [ConfigsController::class, 'destroy']);

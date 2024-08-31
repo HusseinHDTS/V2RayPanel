@@ -111,7 +111,7 @@ $(function () {
       // processing: true,
       // serverSide: true,
       lengthChange: false,
-      pageLength: 100 ,
+      pageLength: 100,
       ajax: {
         url: '/api/admins',
         type: 'GET',
@@ -122,6 +122,7 @@ $(function () {
       columns: [
         // columns according to JSON
         { data: '' },
+        { data: 'id' },
         { data: 'id' },
         { data: 'id' },
         { data: 'id' },
@@ -170,19 +171,26 @@ $(function () {
           // User Status
           targets: 4,
           render: function (data, type, full, meta) {
-            return full['active_sessions'] || "0";
+            return full['max_active_session'] || "0";
           }
         },
         {
           // User Status
           targets: 5,
           render: function (data, type, full, meta) {
-            return `${full['sub_days']} روز`;
+            return full['active_sessions'] || "0";
           }
         },
         {
           // User Status
           targets: 6,
+          render: function (data, type, full, meta) {
+            return `${full['sub_days']} روز`;
+          }
+        },
+        {
+          // User Status
+          targets: 7,
           render: function (data, type, full, meta) {
             const subDays = full['sub_days'];
             const earlierDate = new Date(full['start_sub_date'])
@@ -200,12 +208,12 @@ $(function () {
         },
         {
           // User Status
-          targets: 7,
+          targets: 8,
           render: function (data, type, full, meta) {
             var $status = full['status'];
-            if($status == "active"){
+            if ($status == "active") {
               return `<span class="badge bg-label-success">فعال</span>`;
-            }else{
+            } else {
               return `<span class="badge bg-label-danger">غیرفعال</span>`;
             }
           }
@@ -219,9 +227,9 @@ $(function () {
           render: function (data, type, full, meta) {
             var userUrl = `/app/user/list/${full['id']}`;
             var statusString = "";
-            if(full['status'] == "active"){
+            if (full['status'] == "active") {
               statusString = "غیرفعال کردن";
-            }else{
+            } else {
               statusString = "فعال کردن";
             }
             return (
@@ -240,11 +248,11 @@ $(function () {
           }
         }
       ],
-      order: [[1, 'desc']],
+      // order: [[3, 'desc']],
       dom:
         '<"row me-2"' +
-        '<"col-md-2"<"me-3"l>>' +
-        '<"col-md-10 user_status"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 mb-md-0"fB>>' +
+        // '<"col-md-2"<"me-3"l>>' +
+        '<"col-md-12"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-3 user_status mb-md-0"fB>>' +
         '>t' +
         '<"row mx-2"' +
         '<"col-sm-12 col-md-6"i>' +
@@ -307,10 +315,10 @@ $(function () {
       initComplete: function () {
         const table = this;
         this.api()
-          .columns(2)
+          .columns(1)
           .every(function () {
             var column = this;
-            var statusSelectHolder = $('<div class="col-md-6 col-12"></div>');
+            var internetTypeHolder = $('<div class="col-md-2 col-12"></div>');
             var internetTypeSelect = $(
               '<select class="form-select status-filter me-2"><option value=""> فیلتر خط... </option></select>'
             )
@@ -319,32 +327,35 @@ $(function () {
                 console.log(val);
                 column.search(val ? val : '').draw();
               });
-            statusSelect.append(`<option value="irancel" class="text-capitalize">ایرانسل</option>`);
-            statusSelect.append(`<option value="hamrah_aval" class="text-capitalize">همراه اول</option>`);
-            statusSelect.append(`<option value="rightel" class="text-capitalize">رایتل</option>`);
-            statusSelect.append(`<option value="wifi" class="text-capitalize">وایفای</option>`);
-            statusSelectHolder.append(statusSelect);
-            statusSelectHolder.appendTo('.user_status');
+            internetTypeSelect.append(`<option value="irancel" class="text-capitalize">ایرانسل</option>`);
+            internetTypeSelect.append(`<option value="hamrah" class="text-capitalize">همراه اول</option>`);
+            internetTypeSelect.append(`<option value="rightel" class="text-capitalize">رایتل</option>`);
+            internetTypeSelect.append(`<option value="wifi" class="text-capitalize">وایفای</option>`);
+            internetTypeHolder.append(internetTypeSelect);
+            internetTypeHolder.prependTo('.user_status');
             ///
           });
 
-          this.api()
+        this.api()
           .columns(5)
           .every(function () {
             var column = this;
-            var statusSelectHolder = $('<div class="col-md-6 col-12"></div>');
-            var internetTypeSelect = $(
+            var userTypeHolder = $('<div class="col-md-2 col-12"></div>');
+            var userTypeSelect = $(
               '<select class="form-select status-filter me-2"><option value=""> کاربر... </option></select>'
             )
               .on('change', function () {
                 var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                console.log(val);
-                column.search(val ? val : '').draw();
+                if(val == "not_sign_in"){
+                  column.search('^0$', true, false, true).draw();
+                }else{
+                  column.search('').draw();
+                }
               });
-            statusSelect.append(`<option value="" class="text-capitalize">همه</option>`);
-            statusSelect.append(`<option value="not_sign_in" class="text-capitalize">وارد اکانت خود نشده اند</option>`);
-            statusSelectHolder.append(statusSelect);
-            statusSelectHolder.appendTo('.user_status');
+            userTypeSelect.append(`<option value="" class="text-capitalize">همه</option>`);
+            userTypeSelect.append(`<option value="not_sign_in" class="text-capitalize">وارد اکانت خود نشده اند</option>`);
+            userTypeHolder.append(userTypeSelect);
+            userTypeHolder.prependTo('.user_status');
             ///
           });
       }
@@ -408,7 +419,7 @@ $(function () {
           },
           between: {
             min: 1,
-            max:10,
+            max: 10,
             message: 'تعداد نشست‌های فعال باید حداقل 1 و حداکثر 10 باشد'
           }
         }
@@ -423,7 +434,7 @@ $(function () {
           },
           between: {
             min: 1,
-            max:100000,
+            max: 100000,
             message: 'حجم مجاز باید حداقل 1 و حداکثر 100,000 باشد'
           }
         }
@@ -438,7 +449,7 @@ $(function () {
           },
           between: {
             min: 1,
-            max:365,
+            max: 365,
             message: 'تعداد روز های مجاز باید حداقل 1 و حداکثر 365 باشد'
           }
         }

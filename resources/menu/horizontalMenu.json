@@ -19,6 +19,13 @@
       "icon": "menu-icon tf-icons ti ti-settings",
       "role": "admin",
       "url": "app/config/list"
+    },
+    {
+      "name": "Backups",
+      "slug": "app-backup-list",
+      "icon": "menu-icon tf-icons ti ti-files",
+      "role": "admin",
+      "url": "app/backup/list"
     }
   ]
 }

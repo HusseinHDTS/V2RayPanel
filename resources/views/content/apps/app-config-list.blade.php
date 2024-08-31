@@ -71,7 +71,7 @@
                         <label class="form-label" for="user-internet-type">نوع خط</label>
                         <select id="user-internet-type" class="form-select" name="internet_type">
                             <option value="irancel">ایرانسل</option>
-                            <option value="hamrah_aval">همراه اول</option>
+                            <option value="hamrah">همراه اول</option>
                             <option value="rightel">رایتل</option>
                             <option value="wifi">وای‌فای</option>
                         </select>

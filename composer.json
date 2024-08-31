@@ -9,12 +9,15 @@
   "license": "MIT",
   "require": {
     "php": "^8.2",
+    "backup-manager/backup-manager": "*",
     "guzzlehttp/guzzle": "^7.2",
     "laravel/framework": "^10.39",
     "laravel/passport": "^12.2",
     "laravel/sanctum": "^3.3",
     "laravel/tinker": "^2.8",
+    "league/flysystem": "^3.28",
     "morilog/jalali": "^3.4",
+    "spatie/laravel-backup": "^9.0",
     "spatie/laravel-permission": "^6.9",
     "yajra/laravel-datatables-oracle": "^10.11"
   },

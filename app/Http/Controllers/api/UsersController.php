@@ -51,17 +51,17 @@ class UsersController extends Controller
   public function user(Request $request)
   {
     $user = Auth::user();
-    if($user->status != "active"){
+    if ($user->status != "active") {
       return response()->json(['message' => 'Your account is not active.'], 403);
     }
     $user->token = str_replace('Bearer ', '', $request->header()['authorization'][0]);
 
     $startDate = Carbon::parse($user->start_sub_date);
-    $endDate = $startDate->copy()->addDays($user->sub_days);
+    $endDate = $startDate->copy()->addDays($user->sub_days + 1);
     $now = Carbon::now();
-    $remainingDays = $endDate->diffInDays($now, false);
+    $remainingDays = $endDate->diffInDays($now);
 
-    $user['days_remaining'] = $remainingDays+1;
+    $user['days_remaining'] = $remainingDays;
     return response()->json($user);
   }
   public function getClientSecret($clientId)
@@ -80,20 +80,34 @@ class UsersController extends Controller
     ]);
 
     $user = User::where('username', $request->username)->first();
-    if($user->status != "active"){
-      return response()->json(['message' => 'Your account is not active.'], 401);
-    }
-    if (!$user || $request->password !== $user->password) {
-      return response()->json(['error' => 'Unauthorized'], 401);
-    }
+    if ($user) {
+      if (!isset($user->status)) {
+        $user->status = 'active';
+      }
+      if ($user->status != "active") {
+        return response()->json(['message' => 'Your account is not active.'], 401);
+      }
+      if (!$user || $request->password !== $user->password) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+      }
 
-    if (!$user->incrementActiveSessions()) {
-      return response()->json(['error' => 'Maximum active sessions reached'], 403);
-    }
+      $token = $user->createToken('Personal Access Token')->accessToken;
+      $startDate = Carbon::parse($user->start_sub_date);
+      $endDate = $startDate->copy()->addDays($user->sub_days + 1);
+      $now = Carbon::now();
+      $remainingDays = $endDate->diffInDays($now);
 
-    $token = $user->createToken('Personal Access Token')->accessToken;
-    $user->token = $token;
-    return response()->json($user);
+      if ($remainingDays > 0) {
+        if (!$user->incrementActiveSessions()) {
+          return response()->json(['error' => 'Maximum active sessions reached'], 403);
+        }
+      }
+      $user['days_remaining'] = $remainingDays;
+      $user->token = $token;
+      return response()->json($user);
+    }else{
+      return response()->json(['error' => 'Not Found'], 404);
+    }
   }
   public function logout(Request $request)
   {

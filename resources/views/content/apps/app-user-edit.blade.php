@@ -94,7 +94,7 @@
                             <label for="user-internet-type" class="mb-2">نوع خط</label>
                             <select id="user-internet-type" class="form-select" name="internet_type">
                                 <option value="irancel" @if($user->internet_type == "irancel") selected @endif>ایرانسل</option>
-                                <option value="hamrah_aval" @if($user->internet_type == "hamrah_aval") selected @endif>همراه اول</option>
+                                <option value="hamrah" @if($user->internet_type == "hamrah") selected @endif>همراه اول</option>
                                 <option value="rightel" @if($user->internet_type == "rightel") selected @endif>رایتل</option>
                                 <option value="wifi" @if($user->internet_type == "wifi") selected @endif>وای‌فای</option>
                             </select>

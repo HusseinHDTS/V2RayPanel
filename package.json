@@ -13,7 +13,6 @@
     "@babel/plugin-transform-object-rest-spread": "7.23.4",
     "@babel/plugin-transform-runtime": "7.23.7",
     "@babel/preset-env": "7.23.8",
-    "@neshan-maps-platform/mapbox-gl": "^1.1.1",
     "@prettier/plugin-php": "0.22.1",
     "@rollup/plugin-html": "^1.0.3",
     "@types/typeahead": "^0.11.32",
